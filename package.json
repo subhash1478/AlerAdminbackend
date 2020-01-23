@@ -1,0 +1,35 @@
+{
+  "name": "imagerecognize",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@google-cloud/vision": "^0.22.1",
+    "async": "^2.6.1",
+    "bcrypt-nodejs": "0.0.3",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.5",
+    "csvtojson": "^2.0.8",
+    "debug": "~2.6.9",
+    "dotenv": "^6.2.0",
+    "express": "~4.16.0",
+    "express-fileupload": "^1.1.1-alpha.1",
+    "fs": "0.0.1-security",
+    "geo-nearby": "^2.0.1",
+    "http": "0.0.0",
+    "http-errors": "~1.6.2",
+    "jade": "^1.11.0",
+    "jsonwebtoken": "^8.4.0",
+    "morgan": "~1.9.0",
+    "mysql": "^2.16.0",
+    "mysql-connection-pool-manager": "^1.5.7",
+    "mysql2": "^1.6.5",
+    "node-geocoder": "^3.23.0",
+    "nodemailer": "^5.1.1",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "pug": "2.0.0-beta11",
+    "sequelize": "^4.42.0"
+  }
+}
