@@ -867,5 +867,56 @@ router.post('/delete-user-settings', function (req, res) {
         res.send(result)
     })
 });
+// add Edit Alias Route
+
+router.post('/add-edit-alias', function (req, res) {
+
+    if(!req.headers.authtoken){
+        res.send({
+            success: false,
+            STATUSCODE: 4200,
+            message: "Please provide required information!"
+        })
+    }
+    loginRegister.jwtAuthVerification(req.headers, function (auth) {
+        if (auth.response_code == 2000) {
+            
+            loginRegister.addEditAliasService(req.body, function (result) {
+                res.send(result)
+            })
+
+        } else if (auth.response_code == 4001) {
+            res.send(auth);
+        } else {
+            res.send(auth);
+        }
+    });
+
+});
+// delete   Alias
+router.post('/delete-alias', function (req, res) {
+
+    if(!req.headers.authtoken){
+        res.send({
+            success: false,
+            STATUSCODE: 4200,
+            message: "Please provide required information!"
+        })
+    }
+    loginRegister.jwtAuthVerification(req.headers, function (auth) {
+        if (auth.response_code == 2000) {
+            
+            loginRegister.deleteAliasService(req.body, function (result) {
+                res.send(result)
+            })
+
+        } else if (auth.response_code == 4001) {
+            res.send(auth);
+        } else {
+            res.send(auth);
+        }
+    });
+
+});
 
 module.exports = router;
