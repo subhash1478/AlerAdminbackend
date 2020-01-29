@@ -52,7 +52,6 @@ var loginRegister = {
                 callback(err)
             }
 
-            //console.log('Connected to database.');
             //callback(null, 'Connected to database.', connection)
         });
         return connection;
@@ -499,7 +498,6 @@ var loginRegister = {
 
             })
             .catch(err => {
-                console.log('err--', err);
             })
     },
     csvDownloadAllergenAlias: async (data, callback) => {
@@ -516,7 +514,6 @@ var loginRegister = {
         LINES TERMINATED BY '\n'
         FROM alertrak.AllergenAlias`;
         connection.query(sqlCSV, function (err, result) {
-            console.log(result);
 
             if (err) {
                 callback({
@@ -845,11 +842,9 @@ var loginRegister = {
 
             sql = sqlInsert;
         }
-        //console.log(sql);
 
         connection.query(sql, function (err, result) {
             if (err) {
-                //console.log(err);
 
                 callback({
                     success: false,
@@ -935,7 +930,6 @@ var loginRegister = {
                 connection.query(joinSql, [2, 1], function (err, result) {
                     fs.unlink('./public/' + data.fileName, (err) => {
                         if (err) throw err;
-                        //console.log('successfully deleted');
                     });
                     if (err) {
                         callback({
@@ -965,12 +959,10 @@ var loginRegister = {
 
             })
             .catch(err => {
-                console.log('err--', err);
             })
     },
     // GET All product //
     listAllProductsService: async (data, callback) => {
-        //console.log('data',data);
 
         // create connection
         const connection = loginRegister.connection()
@@ -1738,14 +1730,13 @@ var loginRegister = {
         const connection = loginRegister.connection();
         let sqlInsert;
         // DELETE query
-        if (data.action === 'add') {
+        if (data.action === 'ADD') {
             sqlInsert = `INSERT INTO alertrak.allergentoalias (AllergenID,AliasID) VALUES ("${data.AllergenID}", "${data.AliasID}")`;
 
         } else {
             sqlInsert = `DELETE FROM alertrak.allergentoalias WHERE AllergenID= '${data.AllergenID}' and AliasID= '${data.AliasID}'`;
 
         }
-        console.log(sqlInsert);
 
         connection.query(sqlInsert, function (err, result) {
             if (err) {
