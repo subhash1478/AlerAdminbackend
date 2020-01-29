@@ -918,5 +918,55 @@ router.post('/delete-alias', function (req, res) {
     });
 
 });
+// add-remove-item
+router.post('/add-remove-item', function (req, res) {
+
+    if(!req.headers.authtoken){
+        res.send({
+            success: false,
+            STATUSCODE: 4200,
+            message: "Please provide required information!"
+        })
+    }
+    loginRegister.jwtAuthVerification(req.headers, function (auth) {
+        if (auth.response_code == 2000) {
+            
+            loginRegister.addRemove(req.body, function (result) {
+                res.send(result)
+            })
+
+        } else if (auth.response_code == 4001) {
+            res.send(auth);
+        } else {
+            res.send(auth);
+        }
+    });
+
+});
+// get-add-remove-item
+router.post('/get-add-remove-item', function (req, res) {
+
+    if(!req.headers.authtoken){
+        res.send({
+            success: false,
+            STATUSCODE: 4200,
+            message: "Please provide required information!"
+        })
+    }
+    loginRegister.jwtAuthVerification(req.headers, function (auth) {
+        if (auth.response_code == 2000) {
+            
+            loginRegister.getAddRemoveItem(req.body, function (result) {
+                res.send(result)
+            })
+
+        } else if (auth.response_code == 4001) {
+            res.send(auth);
+        } else {
+            res.send(auth);
+        }
+    });
+
+});
 
 module.exports = router;

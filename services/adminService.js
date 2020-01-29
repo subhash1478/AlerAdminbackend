@@ -34,7 +34,7 @@ var loginRegister = {
     },
     // Connection Function
     connection: () => {
-        
+
 
         // Provide connection details
         var connection = mysql.createConnection({
@@ -58,7 +58,7 @@ var loginRegister = {
         return connection;
 
     },
-    
+
     testEmail: (data, protocol, host, callback) => {
         mailProperty('userMail')(data.email, {
             name: "Surojit",
@@ -76,7 +76,7 @@ var loginRegister = {
 
         connection.query(sqlUser, function (err, result) {
             if (err) {
-                
+
                 callback({
                     success: false,
                     STATUSCODE: 5010,
@@ -85,7 +85,7 @@ var loginRegister = {
                 });
             }
             if (result.length === 0) {
-                
+
                 callback({
                     success: false,
                     STATUSCODE: 5010,
@@ -117,8 +117,8 @@ var loginRegister = {
                         }, process.env.secretKey, {
                             expiresIn: '8760h'
                         });
-                       
-                        
+
+
                         // login callback
                         callback({
                             success: true,
@@ -133,7 +133,7 @@ var loginRegister = {
                     }
 
                 } else {
-                    
+
                     callback({
                         success: false,
                         STATUSCODE: 5010,
@@ -153,27 +153,27 @@ var loginRegister = {
     },
     // GET all user
     listUserService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
         let sqlTotalUser = `SELECT count(*) as count FROM alertrak.Users `;
         // user select query
         let sqlUser = `(SELECT * FROM alertrak.Users `;
-        if(data.searchTerm){
-            sqlTotalUser +=`WHERE 
+        if (data.searchTerm) {
+            sqlTotalUser += `WHERE 
             firstName LIKE '%${data.searchTerm}%' OR 
             email LIKE '%${data.searchTerm}%'`;
-            sqlUser +=`WHERE 
+            sqlUser += `WHERE 
             firstName LIKE '%${data.searchTerm}%' OR 
             email LIKE '%${data.searchTerm}%'
             LIMIT ${data.offset}, ${data.limit})`;
-        }else{
-            sqlUser +=`LIMIT ${data.offset}, ${data.limit})`;
+        } else {
+            sqlUser += `LIMIT ${data.offset}, ${data.limit})`;
         }
 
-        let joinSql = sqlTotalUser +';'+sqlUser
+        let joinSql = sqlTotalUser + ';' + sqlUser
 
-        connection.query(joinSql,[2, 1], function (err, result) {
+        connection.query(joinSql, [2, 1], function (err, result) {
             if (err) {
                 callback({
                     success: false,
@@ -182,12 +182,12 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
-                    message: "Success"+ result.length,
+                    message: "Success" + result.length,
                     totalData: result[0][0].count,
                     response: result[1]
                 });
@@ -202,16 +202,16 @@ var loginRegister = {
     },
     // Edit user
     editUserService: async (data, callback) => {
-       
+
         // create connection
         const connection = loginRegister.connection()
         var exclution = data.Exclusion ? data.Exclusion : '';
-        
+
         // EDIT query
         var sqlEdit = `UPDATE alertrak.Users SET firstName= '${data.firstName}', email= '${data.email}', 
         emailVerify='${data.emailVerify}', IsAdmin='${data.IsAdmin}' WHERE userID='${data.userID}'`;
-       
-        
+
+
         connection.query(sqlEdit, function (err, result) {
             if (err) {
                 callback({
@@ -221,8 +221,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -240,27 +240,27 @@ var loginRegister = {
     },
     // GET all user Settings
     listUserSettingsService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
         let sqlTotalUser = `SELECT count(*) as count FROM alertrak.UserSettings `;
         // user select query
         let sqlUser = `(SELECT * FROM alertrak.UserSettings `;
-        if(data.searchTerm){
-            sqlTotalUser +=`WHERE 
+        if (data.searchTerm) {
+            sqlTotalUser += `WHERE 
             Member LIKE '%${data.searchTerm}%' OR 
             CustomNames LIKE '%${data.searchTerm}%'`;
-            sqlUser +=`WHERE 
+            sqlUser += `WHERE 
             Member LIKE '%${data.searchTerm}%' OR 
             CustomNames LIKE '%${data.searchTerm}%'
             LIMIT ${data.offset}, ${data.limit})`;
-        }else{
-            sqlUser +=`LIMIT ${data.offset}, ${data.limit})`;
+        } else {
+            sqlUser += `LIMIT ${data.offset}, ${data.limit})`;
         }
-        
-        let joinSql = sqlTotalUser +';'+sqlUser
 
-        connection.query(joinSql,[2, 1], function (err, result) {
+        let joinSql = sqlTotalUser + ';' + sqlUser
+
+        connection.query(joinSql, [2, 1], function (err, result) {
             if (err) {
                 callback({
                     success: false,
@@ -269,12 +269,12 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
-                    message: "Success"+ result.length,
+                    message: "Success" + result.length,
                     totalData: result[0][0].count,
                     response: result[1]
                 });
@@ -289,31 +289,31 @@ var loginRegister = {
     },
     // GET all Allergen Alias
     listAllergeanAliasService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
         let sqlTotalUser = `SELECT count(*) as count FROM alertrak.AllergenAlias `;
         // user select query
         let sqlUser = `SELECT * FROM alertrak.AllergenAlias `;
-        if(! data.allData){
-            if(data.searchTerm){
-                sqlTotalUser +=`WHERE 
+        if (!data.allData) {
+            if (data.searchTerm) {
+                sqlTotalUser += `WHERE 
                 Allergen LIKE '%${data.searchTerm}%' OR 
                 Alias LIKE '%${data.searchTerm}%' OR 
                 Exclusion LIKE '%${data.searchTerm}%'`;
-                sqlUser +=`WHERE 
+                sqlUser += `WHERE 
                 Allergen LIKE '%${data.searchTerm}%' OR 
                 Alias LIKE '%${data.searchTerm}%' OR 
                 Exclusion LIKE '%${data.searchTerm}%'
                 LIMIT ${data.offset}, ${data.limit}`;
-            }else{
-                sqlUser +=`LIMIT ${data.offset}, ${data.limit}`;
+            } else {
+                sqlUser += `LIMIT ${data.offset}, ${data.limit}`;
             }
         }
-        
-        let joinSql = sqlTotalUser +';'+sqlUser
 
-        connection.query(joinSql,[2, 1], function (err, result) {
+        let joinSql = sqlTotalUser + ';' + sqlUser
+
+        connection.query(joinSql, [2, 1], function (err, result) {
             if (err) {
                 callback({
                     success: false,
@@ -322,12 +322,12 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
-                    message: "Success"+ result.length,
+                    message: "Success" + result.length,
                     totalData: result[0][0].count,
                     response: result[1]
                 });
@@ -342,27 +342,27 @@ var loginRegister = {
     },
     // Edit all Allergen Alias
     addEditAllergenAliasService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
         var exclution = data.Exclusion ? data.Exclusion : '';
-        
+
         // EDIT query
         var sqlEdit = `UPDATE alertrak.AllergenAlias SET Allergen= '${data.Allergen}', Alias= '${data.Alias}', 
         Exclusion='${data.Exclusion}', StatusFlag='${data.StatusFlag}' WHERE AliasID='${data.AliasID}'`;
         //INSERT query
         var sqlInsert = `INSERT INTO alertrak.AllergenAlias (Allergen, Alias, Exclusion, StatusFlag) 
         VALUES ("${data.Allergen} ", "${data.Alias}", "${exclution}", "${data.StatusFlag}")`;
-        
+
         var sql = "";
-        if(data.AliasID){
-            
+        if (data.AliasID) {
+
             sql = sqlEdit;
-        }else{
-            
+        } else {
+
             sql = sqlInsert;
         }
-        
+
         connection.query(sql, function (err, result) {
             if (err) {
                 callback({
@@ -372,8 +372,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -391,14 +391,14 @@ var loginRegister = {
     },
     // Delete Allergen Alias
     deleteAllergenAliasService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
-        
-        
+
+
         // EDIT query
         var sql = `DELETE FROM alertrak.AllergenAlias WHERE AliasID='${data.AliasID}'`;
-        
+
         connection.query(sql, function (err, result) {
             if (err) {
                 callback({
@@ -408,8 +408,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -426,81 +426,81 @@ var loginRegister = {
 
     },
     csvUploadAllergenAlias: async (files, callback) => {
-        files.csv.mv('./public/'+files.csv.name,function (err) {
-                    if(err){
+        files.csv.mv('./public/' + files.csv.name, function (err) {
+            if (err) {
+                callback({
+                    success: false,
+                    STATUSCODE: 4200,
+                    message: "Failed",
+                    response: err
+                });
+            } else {
+                callback({
+                    success: true,
+                    STATUSCODE: 2000,
+                    message: "Success",
+                    response: files.csv.name
+                });
+            }
+
+        })
+
+    },
+    csvDataReadAndInsertAllergenAlias: async (data, callback) => {
+        // create connection
+        const connection = loginRegister.connection()
+        csvtojson()
+            .fromFile('./public/' + data.fileName)
+            .then(async (jsonObj) => {
+                var sqlTruncate = `TRUNCATE alertrak.AllergenAlias`;
+                var insertQuery = `INSERT INTO alertrak.AllergenAlias (Allergen, Alias, Exclusion) VALUES `
+                var counter = 0;
+                await async.each(jsonObj, (res, cb) => {
+                    counter++;
+                    if (counter !== jsonObj.length) {
+                        insertQuery += `("${res.Allergen} ", "${res.Alias}", "${res.Exclusion}"),`;
+                    } else {
+                        insertQuery += `("${res.Allergen} ", "${res.Alias}", "${res.Exclusion}")`;
+                    }
+
+                })
+
+                let joinSql = sqlTruncate + ';' + insertQuery
+                connection.query(joinSql, [2, 1], function (err, result) {
+                    fs.unlink('./public/' + data.fileName, (err) => {
+                        if (err) throw err;
+
+                    });
+                    if (err) {
                         callback({
                             success: false,
                             STATUSCODE: 4200,
                             message: "Failed",
                             response: err
                         });
-                    }else{
+                    }
+                    else {
+
                         callback({
                             success: true,
                             STATUSCODE: 2000,
                             message: "Success",
-                            response: files.csv.name
+                            response: result
                         });
                     }
-                    
-                })
-        
-    },
-    csvDataReadAndInsertAllergenAlias: async (data, callback) => {
-        // create connection
-        const connection = loginRegister.connection()
-        csvtojson()
-                .fromFile('./public/'+data.fileName)
-                .then(async (jsonObj)=>{
-                    var sqlTruncate = `TRUNCATE alertrak.AllergenAlias`;
-                    var insertQuery = `INSERT INTO alertrak.AllergenAlias (Allergen, Alias, Exclusion) VALUES `
-                    var counter = 0;
-                    await async.each(jsonObj, (res, cb) =>{
-                        counter++;
-                        if(counter !== jsonObj.length){
-                            insertQuery += `("${res.Allergen} ", "${res.Alias}", "${res.Exclusion}"),`;
-                        }else{
-                            insertQuery += `("${res.Allergen} ", "${res.Alias}", "${res.Exclusion}")`;
-                        }
-                        
-                    })
-                    
-                    let joinSql = sqlTruncate +';'+insertQuery
-                    connection.query(joinSql,[2, 1], function (err, result) {
-                        fs.unlink('./public/'+data.fileName, (err) => {
-                            if (err) throw err;
-                            
-                        });
-                        if (err) {
-                            callback({
-                                success: false,
-                                STATUSCODE: 4200,
-                                message: "Failed",
-                                response: err
-                            });
-                        }
-                        else {
-                            
-                            callback({
-                                success: true,
-                                STATUSCODE: 2000,
-                                message: "Success",
-                                response: result
-                            });
-                        }
-            
-            
-                    });
-                    // end connection
-                    connection.end();
-                    
-                    
-                   
-                    
-                })
-                .catch(err =>{
-                    console.log('err--',err);
-                })
+
+
+                });
+                // end connection
+                connection.end();
+
+
+
+
+            })
+            .catch(err => {
+                console.log('err--', err);
+            })
     },
     csvDownloadAllergenAlias: async (data, callback) => {
         // create connection
@@ -517,7 +517,7 @@ var loginRegister = {
         FROM alertrak.AllergenAlias`;
         connection.query(sqlCSV, function (err, result) {
             console.log(result);
-            
+
             if (err) {
                 callback({
                     success: false,
@@ -526,12 +526,12 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
-                    message: "Success"+ result.length,
+                    message: "Success" + result.length,
                     totalData: result[0][0].count,
                     response: result[1]
                 });
@@ -544,29 +544,29 @@ var loginRegister = {
     },
     // GET all Allergen
     listAllergeanService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
         let sqlTotalUser = `SELECT count(*) as count FROM alertrak.Allergen `;
         // user select query
         let sqlUser = `SELECT * FROM alertrak.Allergen `;
-        if(! data.allData){
-            if(data.searchTerm){
-                sqlTotalUser +=`WHERE 
+        if (!data.allData) {
+            if (data.searchTerm) {
+                sqlTotalUser += `WHERE 
                  
                 AllergenName LIKE '%${data.searchTerm}%'`;
-                sqlUser +=`WHERE 
+                sqlUser += `WHERE 
                  
                 AllergenName LIKE '%${data.searchTerm}%'
                 LIMIT ${data.offset}, ${data.limit}`;
-            }else{
-                sqlUser +=`LIMIT ${data.offset}, ${data.limit}`;
+            } else {
+                sqlUser += `LIMIT ${data.offset}, ${data.limit}`;
             }
         }
-        
-        let joinSql = sqlTotalUser +';'+sqlUser
 
-        connection.query(joinSql,[2, 1], function (err, result) {
+        let joinSql = sqlTotalUser + ';' + sqlUser
+
+        connection.query(joinSql, [2, 1], function (err, result) {
             if (err) {
                 callback({
                     success: false,
@@ -575,12 +575,12 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
-                    message: "Success"+ result.length,
+                    message: "Success" + result.length,
                     totalData: result[0][0].count,
                     response: result[1]
                 });
@@ -593,26 +593,26 @@ var loginRegister = {
     },
     // Add Edit all Allergen
     addEditAllergenService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
         var exclution = data.Exclusion ? data.Exclusion : '';
-        
+
         // EDIT query
         var sqlEdit = `UPDATE alertrak.Allergen SET AllergenName= '${data.AllergenName}', StatusFlag='${data.StatusFlag}' 
         WHERE AllergenID='${data.AllergenID}'`;
         //INSERT query
         var sqlInsert = `INSERT INTO alertrak.Allergen (AllergenName) 
         VALUES ("${data.AllergenName} ")`;
-        
+
         var sql = "";
-        if(data.AllergenID){            
+        if (data.AllergenID) {
             sql = sqlEdit;
-        }else{
-            
+        } else {
+
             sql = sqlInsert;
         }
-        
+
         connection.query(sql, function (err, result) {
             if (err) {
                 callback({
@@ -622,8 +622,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -641,14 +641,14 @@ var loginRegister = {
     },
     // Delete Allergen
     deleteAllergenService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
-        
-        
+
+
         // EDIT query
         var sql = `DELETE FROM alertrak.Allergen WHERE AllergenID='${data.AllergenID}'`;
-        
+
         connection.query(sql, function (err, result) {
             if (err) {
                 callback({
@@ -658,8 +658,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -676,29 +676,29 @@ var loginRegister = {
 
     },
     // GET all Alias
-    listAliasService: async (data, callback) => {        
+    listAliasService: async (data, callback) => {
         // create connection
         const connection = loginRegister.connection()
         let sqlTotalUser = `SELECT count(*) as count FROM alertrak.Alias `;
         // user select query
         let sqlUser = `SELECT * FROM alertrak.Alias `;
-        if(! data.allData){
-            if(data.searchTerm){
-                sqlTotalUser +=`WHERE 
+        if (!data.allData) {
+            if (data.searchTerm) {
+                sqlTotalUser += `WHERE 
                 Exclusion LIKE '%${data.searchTerm}%' OR
                 AliasName LIKE '%${data.searchTerm}%'`;
-                sqlUser +=`WHERE 
+                sqlUser += `WHERE 
                 Exclusion LIKE '%${data.searchTerm}%' OR
                 AliasName LIKE '%${data.searchTerm}%'
                 LIMIT ${data.offset}, ${data.limit}`;
-            }else{
-                sqlUser +=`LIMIT ${data.offset}, ${data.limit}`;
+            } else {
+                sqlUser += `LIMIT ${data.offset}, ${data.limit}`;
             }
         }
-        
-        let joinSql = sqlTotalUser +';'+sqlUser
 
-        connection.query(joinSql,[2, 1], function (err, result) {
+        let joinSql = sqlTotalUser + ';' + sqlUser
+
+        connection.query(joinSql, [2, 1], function (err, result) {
             if (err) {
                 callback({
                     success: false,
@@ -707,12 +707,12 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
-                    message: "Success"+ result.length,
+                    message: "Success" + result.length,
                     totalData: result[0][0].count,
                     response: result[1]
                 });
@@ -724,39 +724,39 @@ var loginRegister = {
         connection.end();
     },
 
-    
+
     // GET all list food items
     listFoodItemsService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
         let sqlTotalUser = `SELECT count(*) as count FROM alertrak.FoodItems `;
         // user select query
         let sqlUser = `(SELECT * FROM alertrak.FoodItems `;
-        if(! data.allData){
-            if(data.searchTerm){
-                sqlTotalUser +=`WHERE 
+        if (!data.allData) {
+            if (data.searchTerm) {
+                sqlTotalUser += `WHERE 
                 Type LIKE '%${data.searchTerm}%' OR 
                 Name LIKE '%${data.searchTerm}%' OR 
                 Comments LIKE '%${data.searchTerm}%' OR 
                 "Condition" LIKE '%${data.searchTerm}%'`;
-                sqlUser +=`WHERE 
+                sqlUser += `WHERE 
                 Type LIKE '%${data.searchTerm}%' OR 
                 Name LIKE '%${data.searchTerm}%' OR 
                 Comments LIKE '%${data.searchTerm}%' OR `;
-                sqlUser +="`Condition` LIKE '%"+data.searchTerm+"%'"
-                sqlUser +=`LIMIT ${data.offset}, ${data.limit})`;
-            }else{
-                sqlUser +=`LIMIT ${data.offset}, ${data.limit})`;
+                sqlUser += "`Condition` LIKE '%" + data.searchTerm + "%'"
+                sqlUser += `LIMIT ${data.offset}, ${data.limit})`;
+            } else {
+                sqlUser += `LIMIT ${data.offset}, ${data.limit})`;
             }
         }
-        else{
-            sqlUser +=`)`;
+        else {
+            sqlUser += `)`;
         }
-        
-        let joinSql = sqlTotalUser +';'+sqlUser
 
-        connection.query(joinSql,[2, 1], function (err, result) {
+        let joinSql = sqlTotalUser + ';' + sqlUser
+
+        connection.query(joinSql, [2, 1], function (err, result) {
             if (err) {
                 callback({
                     success: false,
@@ -766,12 +766,12 @@ var loginRegister = {
                     query: sqlUser
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
-                    message: "Success"+ result.length,
+                    message: "Success" + result.length,
                     totalData: result[0][0].count,
                     response: result[1]
                 });
@@ -784,13 +784,13 @@ var loginRegister = {
     },
     // GET distinct Food Item Type
     foodItemTypeService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
-        
+
         // user select query
         let sql = `SELECT DISTINCT(Type) FROM alertrak.FoodItems `;
-        
+
 
         connection.query(sql, function (err, result) {
             if (err) {
@@ -802,12 +802,12 @@ var loginRegister = {
                     query: sqlUser
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
-                    message: "Success"+ result.length,
+                    message: "Success" + result.length,
                     totalData: result.length,
                     response: result
                 });
@@ -820,37 +820,37 @@ var loginRegister = {
     },
     // Add edit list food items
     addEditlistFoodItemsService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
         var Condition = data.Condition ? data.Condition : '';
         var Comments = data.Comments ? data.Comments.replace(/'/g, "\\'").replace(/"/g, '\\"') : '';
         var StatusFlag = data.StatusFlag ? data.StatusFlag : 0;
         var DeleteStatus = data.DeleteStatus ? data.DeleteStatus : 0;
-        
+
         // EDIT query
-        var sqlEdit = `UPDATE alertrak.FoodItems SET Type= '${data.Type}',Name= '${data.Name}',AlergenId= '${data.AlergenId}',`; 
-        sqlEdit +="`Condition` = '"+Condition+"',";
+        var sqlEdit = `UPDATE alertrak.FoodItems SET Type= '${data.Type}',Name= '${data.Name}',AlergenId= '${data.AlergenId}',`;
+        sqlEdit += "`Condition` = '" + Condition + "',";
         sqlEdit += `Comments='${Comments}', StatusFlag='${StatusFlag}', DeleteStatus='${DeleteStatus} ' 
         WHERE ItemID='${data.ItemID}'`;
         //INSERT query
         var sqlInsert = "INSERT INTO alertrak.FoodItems (`Type`, `Name`, `AlergenId`, `Condition`, `Comments`) ";
-        sqlInsert +=`VALUES ('${data.Type}' , '${data.Name}', '${data.AlergenId}', '${Condition}', '${Comments}')`;
-        
+        sqlInsert += `VALUES ('${data.Type}' , '${data.Name}', '${data.AlergenId}', '${Condition}', '${Comments}')`;
+
         var sql = "";
-        if(data.ItemID){
-            
+        if (data.ItemID) {
+
             sql = sqlEdit;
-        }else{
-            
+        } else {
+
             sql = sqlInsert;
         }
         //console.log(sql);
-        
+
         connection.query(sql, function (err, result) {
             if (err) {
                 //console.log(err);
-                
+
                 callback({
                     success: false,
                     STATUSCODE: 4200,
@@ -858,8 +858,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -877,14 +877,14 @@ var loginRegister = {
     },
     // Delete Food Item
     deleteListFoodItemsService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
-        
-        
+
+
         // EDIT query
         var sql = `DELETE FROM alertrak.FoodItems WHERE ItemID='${data.ItemID}'`;
-        
+
         connection.query(sql, function (err, result) {
             if (err) {
                 callback({
@@ -894,8 +894,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -916,86 +916,86 @@ var loginRegister = {
         // create connection
         const connection = loginRegister.connection()
         csvtojson()
-                .fromFile('./public/'+data.fileName)
-                .then(async (jsonObj)=>{
-                    var sqlTruncate = `TRUNCATE alertrak.FoodItems`;
-                    var insertQuery = "INSERT INTO alertrak.FoodItems (`Type`, `Name`, `Condition`, `Comments`) VALUES "
-                    var counter = 0;
-                    await async.each(jsonObj, (res, cb) =>{
-                        counter++;
-                        if(counter !== jsonObj.length){
-                            insertQuery += `("${res.Type} ", "${res.Name}", "${res.Condition}", "${res.Comments}"),`;
-                        }else{
-                            insertQuery += `("${res.Type} ", "${res.Name}", "${res.Condition}", "${res.Comments}")`;
-                        }
-                        
-                    })
-                    
-                    let joinSql = sqlTruncate +';'+insertQuery
-                    connection.query(joinSql,[2, 1], function (err, result) {
-                        fs.unlink('./public/'+data.fileName, (err) => {
-                            if (err) throw err;
-                            //console.log('successfully deleted');
-                        });
-                        if (err) {
-                            callback({
-                                success: false,
-                                STATUSCODE: 4200,
-                                message: "Failed",
-                                response: err
-                            });
-                        }
-                        else {
-                            
-                            callback({
-                                success: true,
-                                STATUSCODE: 2000,
-                                message: "Success",
-                                response: result
-                            });
-                        }
-            
-            
+            .fromFile('./public/' + data.fileName)
+            .then(async (jsonObj) => {
+                var sqlTruncate = `TRUNCATE alertrak.FoodItems`;
+                var insertQuery = "INSERT INTO alertrak.FoodItems (`Type`, `Name`, `Condition`, `Comments`) VALUES "
+                var counter = 0;
+                await async.each(jsonObj, (res, cb) => {
+                    counter++;
+                    if (counter !== jsonObj.length) {
+                        insertQuery += `("${res.Type} ", "${res.Name}", "${res.Condition}", "${res.Comments}"),`;
+                    } else {
+                        insertQuery += `("${res.Type} ", "${res.Name}", "${res.Condition}", "${res.Comments}")`;
+                    }
+
+                })
+
+                let joinSql = sqlTruncate + ';' + insertQuery
+                connection.query(joinSql, [2, 1], function (err, result) {
+                    fs.unlink('./public/' + data.fileName, (err) => {
+                        if (err) throw err;
+                        //console.log('successfully deleted');
                     });
-                    // end connection
-                    connection.end();
-                    
-                    
-                   
-                    
-                })
-                .catch(err =>{
-                    console.log('err--',err);
-                })
+                    if (err) {
+                        callback({
+                            success: false,
+                            STATUSCODE: 4200,
+                            message: "Failed",
+                            response: err
+                        });
+                    }
+                    else {
+
+                        callback({
+                            success: true,
+                            STATUSCODE: 2000,
+                            message: "Success",
+                            response: result
+                        });
+                    }
+
+
+                });
+                // end connection
+                connection.end();
+
+
+
+
+            })
+            .catch(err => {
+                console.log('err--', err);
+            })
     },
     // GET All product //
     listAllProductsService: async (data, callback) => {
         //console.log('data',data);
-        
+
         // create connection
         const connection = loginRegister.connection()
         let sqlTotalUser = `SELECT count(*) as count FROM alertrak.Products `;
         // user select query
         let sqlUser = `SELECT * FROM alertrak.Products `;
-        if(data.searchTerm){
-            sqlTotalUser +=`WHERE 
+        if (data.searchTerm) {
+            sqlTotalUser += `WHERE 
             ProductName LIKE '%${data.searchTerm}%' OR 
             UPCEAN LIKE '%${data.searchTerm}%' OR
             SourceID LIKE '%${data.searchTerm}%' OR 
             Ingredients LIKE '%${data.searchTerm}%'`;
-            sqlUser +=`WHERE 
+            sqlUser += `WHERE 
             ProductName LIKE '%${data.searchTerm}%' OR 
             UPCEAN LIKE '%${data.searchTerm}%' OR
             SourceID LIKE '%${data.searchTerm}%' OR 
             Ingredients LIKE '%${data.searchTerm}%'
             LIMIT ${data.offset}, ${data.limit}`;
-        }else{
-            sqlUser +=`LIMIT ${data.offset}, ${data.limit}`;
+        } else {
+            sqlUser += `LIMIT ${data.offset}, ${data.limit}`;
         }
-        
-        let joinSql = sqlTotalUser +';'+sqlUser
 
-        connection.query(joinSql,[2, 1], function (err, result) {
+        let joinSql = sqlTotalUser + ';' + sqlUser
+
+        connection.query(joinSql, [2, 1], function (err, result) {
             if (err) {
                 callback({
                     success: false,
@@ -1004,12 +1004,12 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
-                    message: "Success"+ result.length,
+                    message: "Success" + result.length,
                     totalData: result[0][0].count,
                     response: result[1]
                 });
@@ -1023,29 +1023,29 @@ var loginRegister = {
 
     },
     addEditProductService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
         var Condition = data.Condition ? data.Condition : '';
         var Comments = data.Comments ? data.Comments : '';
-        
+
         // EDIT query
         var sqlEdit = `UPDATE alertrak.Products SET SourceID= '${data.SourceID}',ProductName= '${data.ProductName}', 
         Source= '${data.Source}',UPCEAN='${data.UPCEAN}', Manufacturer='${data.Manufacturer}', Ingredients='${data.Ingredients}' 
         WHERE ProductID='${data.ProductID}'`;
         //INSERT query
         var sqlInsert = "INSERT INTO alertrak.Products (`SourceID`, `ProductName`, `Source`, `UPCEAN`, `Manufacturer`, `Ingredients`) ";
-        sqlInsert +=`VALUES ('${data.SourceID}' , '${data.ProductName}', '${data.Source}', '${data.UPCEAN}', '${data.Manufacturer}', '${data.Ingredients}')`;
-        
+        sqlInsert += `VALUES ('${data.SourceID}' , '${data.ProductName}', '${data.Source}', '${data.UPCEAN}', '${data.Manufacturer}', '${data.Ingredients}')`;
+
         var sql = "";
-        if(data.ProductID){
-            
+        if (data.ProductID) {
+
             sql = sqlEdit;
-        }else{
-            
+        } else {
+
             sql = sqlInsert;
         }
-        
+
         connection.query(sql, function (err, result) {
             if (err) {
                 callback({
@@ -1055,8 +1055,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -1073,21 +1073,21 @@ var loginRegister = {
 
     },
     teamsService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
-        
+
         // Select query
-        var sqlSelect = `SELECT Terms, ID FROM alertrak.TermsPrivacy`; 
+        var sqlSelect = `SELECT Terms, ID FROM alertrak.TermsPrivacy`;
         var sql = "";
-        if(data.ID){
-             // update query
+        if (data.ID) {
+            // update query
             var sqlUpdate = `UPDATE alertrak.TermsPrivacy SET Terms='${data.Terms}' WHERE ID='1'`;
             sql = sqlUpdate;
-        }else{
+        } else {
             sql = sqlSelect;
         }
-        
+
         connection.query(sql, function (err, result) {
             if (err) {
                 callback({
@@ -1097,8 +1097,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -1115,21 +1115,21 @@ var loginRegister = {
 
     },
     privacyService: async (data, callback) => {
-        
+
         // create connection
         const connection = loginRegister.connection()
-        
+
         // Select query
-        var sqlSelect = `SELECT Privacy, ID FROM alertrak.TermsPrivacy`; 
+        var sqlSelect = `SELECT Privacy, ID FROM alertrak.TermsPrivacy`;
         var sql = "";
-        if(data.ID){
-             // update query
+        if (data.ID) {
+            // update query
             var sqlUpdate = `UPDATE alertrak.TermsPrivacy SET Privacy='${data.Privacy}' WHERE ID='1'`;
             sql = sqlUpdate;
-        }else{
+        } else {
             sql = sqlSelect;
         }
-        
+
         connection.query(sql, function (err, result) {
             if (err) {
                 callback({
@@ -1139,8 +1139,8 @@ var loginRegister = {
                     response: err
                 });
             }
-             else {
-                
+            else {
+
                 callback({
                     success: true,
                     STATUSCODE: 2000,
@@ -1269,7 +1269,7 @@ var loginRegister = {
 
                         let sqlemail = `UPDATE alertrak.Users SET emailVerify = '0'  where userID = '${data.userId}'`;
 
-                        await connection.query(sqlemail, function (err, resultUpdate) {});
+                        await connection.query(sqlemail, function (err, resultUpdate) { });
 
                         responce_msg += "To change email please verify your new email. ";
                         email_change = 1;
@@ -1432,7 +1432,7 @@ var loginRegister = {
                         });
                     })
 
-                }else{
+                } else {
                     callback({
                         "response_code": 5002,
                         "response_message": "User does not exist",
@@ -1440,7 +1440,7 @@ var loginRegister = {
                     });
                 }
 
-                
+
 
 
 
@@ -1488,13 +1488,13 @@ var loginRegister = {
                         callback({
                             "response_code": 2000,
                             "response_message": "Email sent successfully",
-                            "response_data": {               
+                            "response_data": {
                                 "token": tokenId
                             }
                         });
                     })
 
-                }else{
+                } else {
                     callback({
                         "response_code": 5002,
                         "response_message": "User does not exist",
@@ -1502,7 +1502,7 @@ var loginRegister = {
                     });
                 }
 
-                
+
 
 
 
@@ -1526,21 +1526,21 @@ var loginRegister = {
                         response_data: err
                     });
                 } else {
-                    if(decoded.code === data.code){
+                    if (decoded.code === data.code) {
                         callback({
                             response_code: 2000,
                             response_message: "Authenticate successfully.",
                             response_data: {
-                                userId : decoded.id                                
+                                userId: decoded.id
                             }
                         });
-                    }else{
+                    } else {
                         callback({
                             "response_code": 5002,
                             "response_message": "wrong password code"
                         })
                     }
-                   
+
                 }
             });
         } else {
@@ -1552,14 +1552,14 @@ var loginRegister = {
     },
     // Get Set user settings
     getSetUserSettings: async (data, callback) => {
-        
+
         if (data) {
             //main data
             var mainData = data.mainData;
             // create connection
             const connection = loginRegister.connection()
             // Get user settings
-            if(data.type == "GET"){
+            if (data.type == "GET") {
                 // get settings query
                 let sqlUserSettings = `SELECT * FROM alertrak.UserSettings where userID = '${mainData.userId}'`;
 
@@ -1582,87 +1582,87 @@ var loginRegister = {
                 await waitFor(5000);
                 connection.end();
             } //Post user settings
-            else if(data.type == "POST"){
-                
-                
-                    if(mainData.insertUpdate == "INSERT"){
-                        //check id for 0
-                        if(mainData.userId == 0){
-                            callback({
-                                "response_code": 2002,
-                                "response_message": "User id 0 is not allowed !",
-                                "response_data": {}
-                            });
-                        }else{
-                            // inset query
-                            let insertSettings = `INSERT INTO  alertrak.UserSettings 
+            else if (data.type == "POST") {
+
+
+                if (mainData.insertUpdate == "INSERT") {
+                    //check id for 0
+                    if (mainData.userId == 0) {
+                        callback({
+                            "response_code": 2002,
+                            "response_message": "User id 0 is not allowed !",
+                            "response_data": {}
+                        });
+                    } else {
+                        // inset query
+                        let insertSettings = `INSERT INTO  alertrak.UserSettings 
                             (userID,Member,ItemIDS,CustomNames, DefaultMember) 
                             VALUES 
                             ('${mainData.userId}','${mainData.member}','${mainData.itemIds ? mainData.itemIds : ''}', 
-                            '${mainData.customNames ? mainData.customNames: ''}', '${mainData.defaultMember ? mainData.defaultMember: 0}')`;
+                            '${mainData.customNames ? mainData.customNames : ''}', '${mainData.defaultMember ? mainData.defaultMember : 0}')`;
 
-                            connection.query(insertSettings, async function (err, resultIn) {
-                                if(err){
-                                    callback({
-                                        "response_code": 5002,
-                                        "response_message": "Insert Error",
-                                        "response_data": err
-                                    });
-                                }else{
-                                    
-                                    callback({
-                                        "response_code": 2000,
-                                        "response_message": "Insert Successfully",
-                                        "response_data": resultIn
-                                    });
-                                }
-                            });
-                        }
-
-                        
-                        
-                    } else {
-                        // Update query
-                        let updateSettings = `UPDATE alertrak.UserSettings SET `;
-                        if(mainData.itemIds){
-                            updateSettings += `ItemIDS = '${mainData.itemIds ? mainData.itemIds : ''}',`;
-                        }
-                        if(mainData.customNames){
-                            updateSettings += `CustomNames = '${mainData.customNames ? mainData.customNames: ''}',`;
-                        }
-                        updateSettings += ` Member = '${mainData.member}'
-                                                where ID = '${mainData.rowId}'`;
-
-                        
-                        connection.query(updateSettings, async function (err, resultUp) {
-                            if(err){
+                        connection.query(insertSettings, async function (err, resultIn) {
+                            if (err) {
                                 callback({
                                     "response_code": 5002,
-                                    "response_message": "Update Error",
+                                    "response_message": "Insert Error",
                                     "response_data": err
                                 });
-                            }else{
-                                //this.loginRegister.getSetUserSettings('GET')
+                            } else {
+
                                 callback({
                                     "response_code": 2000,
-                                    "response_message": "Update Successfully",
-                                    "response_data": resultUp
+                                    "response_message": "Insert Successfully",
+                                    "response_data": resultIn
                                 });
                             }
                         });
                     }
+
+
+
+                } else {
+                    // Update query
+                    let updateSettings = `UPDATE alertrak.UserSettings SET `;
+                    if (mainData.itemIds) {
+                        updateSettings += `ItemIDS = '${mainData.itemIds ? mainData.itemIds : ''}',`;
+                    }
+                    if (mainData.customNames) {
+                        updateSettings += `CustomNames = '${mainData.customNames ? mainData.customNames : ''}',`;
+                    }
+                    updateSettings += ` Member = '${mainData.member}'
+                                                where ID = '${mainData.rowId}'`;
+
+
+                    connection.query(updateSettings, async function (err, resultUp) {
+                        if (err) {
+                            callback({
+                                "response_code": 5002,
+                                "response_message": "Update Error",
+                                "response_data": err
+                            });
+                        } else {
+                            //this.loginRegister.getSetUserSettings('GET')
+                            callback({
+                                "response_code": 2000,
+                                "response_message": "Update Successfully",
+                                "response_data": resultUp
+                            });
+                        }
+                    });
+                }
                 //});
                 //end connection
                 await waitFor(5000);
                 connection.end();
             }
-            else{
+            else {
                 callback({
                     "response_code": 5002,
                     "response_message": "Please provide required information"
                 })
             }
-    }
+        }
 
 
 
@@ -1703,8 +1703,8 @@ var loginRegister = {
         //INSERT query
         var sqlInsert = `INSERT INTO alertrak.alias (AliasName,Exclusion) VALUES ("${data.AliasName}", "${exclution}")`;
         var sql = "";
-        sql =(data.AliasID)?sqlEdit:sqlInsert;     
-        connection.query(sql,  (err, result) =>{
+        sql = (data.AliasID) ? sqlEdit : sqlInsert;
+        connection.query(sql, (err, result) => {
             if (err) {
                 callback({ success: false, STATUSCODE: 4200, message: "Failed", response: err });
             }
@@ -1718,7 +1718,7 @@ var loginRegister = {
     // delete Alias Service
     deleteAliasService: async (data, callback) => {
         const connection = loginRegister.connection();
-          // DELETE query
+        // DELETE query
         var sql = `DELETE FROM alertrak.alias WHERE AliasID='${data.AliasID}'`;
         connection.query(sql, function (err, result) {
             if (err) {
@@ -1732,6 +1732,52 @@ var loginRegister = {
         connection.end();
     },
 
+    // getAllergentoalias
+    // delete Alias Service
+    addRemove: async (data, callback) => {
+        const connection = loginRegister.connection();
+        let sqlInsert;
+        // DELETE query
+        if (data.action === 'add') {
+            sqlInsert = `INSERT INTO alertrak.allergentoalias (AllergenID,AliasID) VALUES ("${data.AllergenID}", "${data.AliasID}")`;
+
+        } else {
+            sqlInsert = `DELETE FROM alertrak.allergentoalias WHERE AllergenID= '${data.AllergenID}' and AliasID= '${data.AliasID}'`;
+
+        }
+        console.log(sqlInsert);
+
+        connection.query(sqlInsert, function (err, result) {
+            if (err) {
+                callback({ success: false, STATUSCODE: 4200, message: "Failed", response: err });
+            }
+            else {
+                callback({ success: true, STATUSCODE: 2000, message: "Success", response: result });
+            }
+        });
+        // end connection
+        connection.end();
+    },
+    // getAllergentoalias
+    // delete Alias Service
+    getAddRemoveItem: async (data, callback) => {
+        const connection = loginRegister.connection();
+        let sqlInsert;
+        // DELETE query
+        sqlInsert = `SELECT * FROM  alertrak.allergentoalias where ${data.tblColumnName}='${data.id}'`;
+
+
+        connection.query(sqlInsert, function (err, result) {
+            if (err) {
+                callback({ success: false, STATUSCODE: 4200, message: "Failed", response: err });
+            }
+            else {
+                callback({ success: true, STATUSCODE: 2000, message: "Success", response: result });
+            }
+        });
+        // end connection
+        connection.end();
+    },
 }
 
 function randomString(length, chars) {
