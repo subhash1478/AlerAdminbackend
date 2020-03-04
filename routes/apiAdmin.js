@@ -235,8 +235,16 @@ router.post('/csvDataReadAndInsertAllergenAlias', function (req, res) {
     }
     loginRegister.jwtAuthVerification(req.headers, function (auth) {
         if (auth.response_code == 2000) {
+            // res.send({
+            //     success: true,
+            //     STATUSCODE: 2000,
+            //     message: "Success",
+            //     response: "ok"
+            // })
             
             loginRegister.csvDataReadAndInsertAllergenAlias(req.body, function (result) {
+                console.log(result);
+                
                 res.send(result)
             })
 

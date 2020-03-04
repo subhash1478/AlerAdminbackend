@@ -12,7 +12,9 @@ var app = express();
 app.use(cors())
 
 var apiAdminRoutes = require('./routes/apiAdmin');
+var ethnicApiRoutes = require('./routes/ethnicApi');
 app.use('/apiAdmin', apiAdminRoutes);
+app.use('/ethnicApi', ethnicApiRoutes);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

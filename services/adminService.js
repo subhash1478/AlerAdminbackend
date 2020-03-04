@@ -3,6 +3,8 @@ var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
+// var foodItemAllergen = require('../common_functions/foodItems-Allergen');
+// var allergenToAlias = require('../common_functions/allergen-to-alias');
 // var mailProperty = require('../modules/sendMail');
 var csvtojson = require("csvtojson");
 var fs = require('fs');
@@ -445,61 +447,102 @@ var loginRegister = {
         })
 
     },
-    csvDataReadAndInsertAllergenAlias: async (data, callback) => {
-        // create connection
-        const connection = loginRegister.connection()
-        csvtojson()
-            .fromFile('./public/' + data.fileName)
-            .then(async (jsonObj) => {
-                var sqlTruncate = `TRUNCATE alertrak.AllergenAlias`;
-                var insertQuery = `INSERT INTO alertrak.AllergenAlias (Allergen, Alias, Exclusion) VALUES `
-                var counter = 0;
-                await async.each(jsonObj, (res, cb) => {
-                    counter++;
-                    if (counter !== jsonObj.length) {
-                        insertQuery += `("${res.Allergen} ", "${res.Alias}", "${res.Exclusion}"),`;
-                    } else {
-                        insertQuery += `("${res.Allergen} ", "${res.Alias}", "${res.Exclusion}")`;
-                    }
+    // csvDataReadAndInsertAllergenAlias: async (data, callback) => {
+    //     if(data.fileName != "AllergenAlias-Template.csv"){
+    //         callback({
+    //             success: false,
+    //             STATUSCODE: 4200,
+    //             message: "Please choose correct file",
+    //             response: ''
+    //         });
+    //     }else{
+    //         csvtojson()
+    //         .fromFile('./public/' + data.fileName)
+    //         .then(async (jsonObj) => {
+    //             await allergenToAlias(jsonObj).then(r =>{
+    //                 //console.log("----",r);
+                    
+    //                 fs.unlink('./public/' + data.fileName, (err) => {
+    //                             if (err) throw err;
+    //                         });
+    //                 callback({
+    //                             success: true,
+    //                             STATUSCODE: 2000,
+    //                             message: "Success",
+    //                             response: r
+    //                         });
+                    
+    //             })
+    //             .catch(errRes => {
+    //                 //console.error(errRes);
+                    
+    //                 fs.unlink('./public/' + data.fileName, (err) => {
+    //                     if (err) throw err;
+    //                 });
+    //                 callback({
+    //                     success: false,
+    //                     STATUSCODE: 4200,
+    //                     message: "Failed",
+    //                     response: errRes
+    //                 });
+    //             })
+    //             // var sqlTruncate = `TRUNCATE alertrak.AllergenAlias`;
+    //             // var insertQuery = `INSERT INTO alertrak.AllergenAlias (Allergen, Alias, Exclusion) VALUES `
+    //             // var counter = 0;
+    //             // await async.each(jsonObj, (res, cb) => {
+    //             //     counter++;
+    //             //     if (counter !== jsonObj.length) {
+    //             //         insertQuery += `("${res.Allergen} ", "${res.Alias}", "${res.Exclusion}"),`;
+    //             //     } else {
+    //             //         insertQuery += `("${res.Allergen} ", "${res.Alias}", "${res.Exclusion}")`;
+    //             //     }
 
-                })
+    //             // })
 
-                let joinSql = sqlTruncate + ';' + insertQuery
-                connection.query(joinSql, [2, 1], function (err, result) {
-                    fs.unlink('./public/' + data.fileName, (err) => {
-                        if (err) throw err;
+    //             // let joinSql = sqlTruncate + ';' + insertQuery
+    //             // connection.query(joinSql, [2, 1], function (err, result) {
+    //             //     fs.unlink('./public/' + data.fileName, (err) => {
+    //             //         if (err) throw err;
 
-                    });
-                    if (err) {
-                        callback({
-                            success: false,
-                            STATUSCODE: 4200,
-                            message: "Failed",
-                            response: err
-                        });
-                    }
-                    else {
+    //             //     });
+    //             //     if (err) {
+    //             //         callback({
+    //             //             success: false,
+    //             //             STATUSCODE: 4200,
+    //             //             message: "Failed",
+    //             //             response: err
+    //             //         });
+    //             //     }
+    //             //     else {
 
-                        callback({
-                            success: true,
-                            STATUSCODE: 2000,
-                            message: "Success",
-                            response: result
-                        });
-                    }
-
-
-                });
-                // end connection
-                connection.end();
+    //             //         callback({
+    //             //             success: true,
+    //             //             STATUSCODE: 2000,
+    //             //             message: "Success",
+    //             //             response: result
+    //             //         });
+    //             //     }
 
 
+    //             // });
+    //             // // end connection
+    //             // connection.end();
 
 
-            })
-            .catch(err => {
-            })
-    },
+
+
+    //         })
+    //         .catch(err => {
+    //             callback({
+    //                 success: false,
+    //                 STATUSCODE: 4200,
+    //                 message: "Something Went wrong",
+    //                 response: ''
+    //             });
+    //         })
+    //     }
+        
+    // },
     csvDownloadAllergenAlias: async (data, callback) => {
         // create connection
         const connection = loginRegister.connection();
@@ -796,7 +839,7 @@ var loginRegister = {
                     STATUSCODE: 4200,
                     message: "Failed",
                     response: err,
-                    query: sqlUser
+                    query: sql
                 });
             }
             else {
@@ -907,60 +950,100 @@ var loginRegister = {
 
     },
     // Data read from CSV list food items
-    csvDataReadAndInsertListFoodItemsService: async (data, callback) => {
-        // create connection
-        const connection = loginRegister.connection()
-        csvtojson()
-            .fromFile('./public/' + data.fileName)
-            .then(async (jsonObj) => {
-                var sqlTruncate = `TRUNCATE alertrak.FoodItems`;
-                var insertQuery = "INSERT INTO alertrak.FoodItems (`Type`, `Name`, `Condition`, `Comments`) VALUES "
-                var counter = 0;
-                await async.each(jsonObj, (res, cb) => {
-                    counter++;
-                    if (counter !== jsonObj.length) {
-                        insertQuery += `("${res.Type} ", "${res.Name}", "${res.Condition}", "${res.Comments}"),`;
-                    } else {
-                        insertQuery += `("${res.Type} ", "${res.Name}", "${res.Condition}", "${res.Comments}")`;
-                    }
+    // csvDataReadAndInsertListFoodItemsService: async (data, callback) => {
+    //     if(data.fileName != "foodItem-Template.csv"){
+    //         callback({
+    //             success: false,
+    //             STATUSCODE: 4200,
+    //             message: "Please choose correct file",
+    //             response: ''
+    //         });
+    //     }else{
+    //         csvtojson()
+    //             .fromFile('./public/' + data.fileName)
+    //             .then(async (jsonObj) => {
+    //                 foodItemAllergen(jsonObj).then(r =>{
+    //                     //console.log("----",r);
+                        
+    //                     fs.unlink('./public/' + data.fileName, (err) => {
+    //                                 if (err) throw err;
+    //                             });
+    //                     callback({
+    //                                 success: true,
+    //                                 STATUSCODE: 2000,
+    //                                 message: "Success",
+    //                                 response: r
+    //                             });
+                        
+    //                 })
+    //                 .catch(errRes => {
+    //                     //console.error(errRes);
+                        
+    //                     fs.unlink('./public/' + data.fileName, (err) => {
+    //                         if (err) throw err;
+    //                     });
+    //                     callback({
+    //                         success: false,
+    //                         STATUSCODE: 4200,
+    //                         message: "Failed",
+    //                         response: errRes
+    //                     });
+    //                 })
+    //                 // var sqlTruncate = `TRUNCATE alertrak.FoodItems`;
+    //                 // var insertQuery = "INSERT INTO alertrak.FoodItems (`Type`, `Name`, `Condition`, `Comments`) VALUES "
+    //                 // var counter = 0;
+    //                 // await async.each(jsonObj, (res, cb) => {
+    //                 //     counter++;
+    //                 //     if (counter !== jsonObj.length) {
+    //                 //         insertQuery += `("${res.Type} ", "${res.Name}", "${res.Condition}", "${res.Comments}"),`;
+    //                 //     } else {
+    //                 //         insertQuery += `("${res.Type} ", "${res.Name}", "${res.Condition}", "${res.Comments}")`;
+    //                 //     }
 
-                })
+    //                 // })
 
-                let joinSql = sqlTruncate + ';' + insertQuery
-                connection.query(joinSql, [2, 1], function (err, result) {
-                    fs.unlink('./public/' + data.fileName, (err) => {
-                        if (err) throw err;
-                    });
-                    if (err) {
-                        callback({
-                            success: false,
-                            STATUSCODE: 4200,
-                            message: "Failed",
-                            response: err
-                        });
-                    }
-                    else {
+    //                 // let joinSql = sqlTruncate + ';' + insertQuery
+    //                 // connection.query(joinSql, [2, 1], function (err, result) {
+    //                 //     fs.unlink('./public/' + data.fileName, (err) => {
+    //                 //         if (err) throw err;
+    //                 //     });
+    //                 //     if (err) {
+    //                 //         callback({
+    //                 //             success: false,
+    //                 //             STATUSCODE: 4200,
+    //                 //             message: "Failed",
+    //                 //             response: err
+    //                 //         });
+    //                 //     }
+    //                 //     else {
 
-                        callback({
-                            success: true,
-                            STATUSCODE: 2000,
-                            message: "Success",
-                            response: result
-                        });
-                    }
-
-
-                });
-                // end connection
-                connection.end();
+    //                 //         callback({
+    //                 //             success: true,
+    //                 //             STATUSCODE: 2000,
+    //                 //             message: "Success",
+    //                 //             response: result
+    //                 //         });
+    //                 //     }
 
 
+    //                 // });
+    //                 // // end connection
+    //                 // connection.end();
 
 
-            })
-            .catch(err => {
-            })
-    },
+
+
+    //             })
+    //             .catch(err => {
+    //                 callback({
+    //                     success: false,
+    //                     STATUSCODE: 4200,
+    //                     message: "Something Went wrong",
+    //                     response: ''
+    //                 });
+    //             })
+    //         }
+    // },
     // GET All product //
     listAllProductsService: async (data, callback) => {
 
@@ -1724,17 +1807,17 @@ var loginRegister = {
         connection.end();
     },
 
-    // getAllergentoalias
+    // getAllergenToAlias
     // delete Alias Service
     addRemove: async (data, callback) => {
         const connection = loginRegister.connection();
         let sqlInsert;
         // DELETE query
         if (data.action === 'ADD') {
-            sqlInsert = `INSERT INTO alertrak.allergentoalias (AllergenID,AliasID) VALUES ("${data.AllergenID}", "${data.AliasID}")`;
+            sqlInsert = `INSERT INTO alertrak.AllergenToAlias (AllergenID,AliasID) VALUES ("${data.AllergenID}", "${data.AliasID}")`;
 
         } else {
-            sqlInsert = `DELETE FROM alertrak.allergentoalias WHERE AllergenID= '${data.AllergenID}' and AliasID= '${data.AliasID}'`;
+            sqlInsert = `DELETE FROM alertrak.AllergenToAlias WHERE AllergenID= '${data.AllergenID}' and AliasID= '${data.AliasID}'`;
 
         }
 
@@ -1749,13 +1832,13 @@ var loginRegister = {
         // end connection
         connection.end();
     },
-    // getAllergentoalias
+    // getAllergenToAlias
     // delete Alias Service
     getAddRemoveItem: async (data, callback) => {
         const connection = loginRegister.connection();
         let sqlInsert;
         // DELETE query
-        sqlInsert = `SELECT * FROM  alertrak.allergentoalias where ${data.tblColumnName}='${data.id}'`;
+        sqlInsert = `SELECT * FROM  alertrak.AllergenToAlias where ${data.tblColumnName}='${data.id}'`;
 
 
         connection.query(sqlInsert, function (err, result) {
