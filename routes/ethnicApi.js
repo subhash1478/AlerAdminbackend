@@ -7,8 +7,13 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({
     extended: true
 }));
-router.post('/add',   (req, res)=> {
-    ethnicServices.addEthnic(req.body, (data) => {
+router.post('/add-edit-ethnic',   (req, res)=> {
+    ethnicServices.addEditEthnic(req.body, (data) => {
+        res.send(data);
+    })
+});
+router.post('/delete-ethnic',   (req, res)=> {
+    ethnicServices.deleteEthnic(req.body, (data) => {
         res.send(data);
     })
 });
