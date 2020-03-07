@@ -1,5 +1,5 @@
 var mysql = require('mysql');
-var connectionServices ={
+var connectionServices = {
     doConnection: () => {
         // Provide connection details
         var connection = mysql.createConnection({
@@ -8,10 +8,17 @@ var connectionServices ={
             password: process.env.DB_PASS,
             port: 3306,
             //debug: true,
-            multipleStatements: true
+            multipleStatements: true,
+            typeCast: function castField(field, useDefaultTypeCasting) {
+                if ((field.type === "BIT") && (field.length === 1)) {
+                    var bytes = field.buffer();
+                    return (bytes[0] === 1);
+                }
+                return (useDefaultTypeCasting());
+            }
             //timeout: 60000
         });
-        connection.connect(function (err) {
+        connection.connect(function (err, callback) {
             if (err) {
                 callback(err)
             }
@@ -19,6 +26,5 @@ var connectionServices ={
         });
         return connection;
     }
-    
 }
 module.exports = connectionServices;
