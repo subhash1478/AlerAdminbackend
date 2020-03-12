@@ -62,19 +62,29 @@ var ethnicServices = {
         const connection = db.doConnection();
         const joinQuery = ` WHERE MasterId='${data.MasterId}'`;
         let selectQuery = `SELECT MasterId ,specialcategoryID FROM alertrak.masterproductallergenalias `;
-        selectQuery+=joinQuery
+        selectQuery += joinQuery
         connection.query(selectQuery, data, (err, result) => {
             if (err) {
                 callback(response.json(err))
             }
             else {
                 const specialcategoryID = result[0].specialcategoryID;
+                const array = specialcategoryID.split(',');
                 let value = '';
-                if (specialcategoryID.length === 0) {
-                    const array = specialcategoryID.split(',').push(data.specialcategoryID).join(',');
-                    value = array.join(',');
+                if (data.type === 'add') {
+                    if (array.length === 0) {
+                        array.push(data.specialcategoryID).join(',');
+                        value = array.join(',');
+                    } else {
+                        value = data.specialcategoryID;
+                    }
                 } else {
-                    value = data.specialcategoryID;
+                    if (array.length === 1) {
+                        value = ''
+                    } else {
+                        const a = array.findIndex((item) => item === data.specialcategoryID);
+                        value = array.splice(a, 1).join(',');
+                    }
                 }
                 let updateQuery = `UPDATE alertrak.masterproductallergenalias  SET specialcategoryID='${value}'`;
                 updateQuery += joinQuery;
