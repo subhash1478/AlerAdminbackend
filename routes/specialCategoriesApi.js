@@ -23,13 +23,28 @@ router.post('/delete', isAuthorized, (req, res, next) => {
         res.send(data);
     })
 });
-router.get('/master-product-allergen-alias', isAuthorized, (req, res, next) => {
-    specialCategoriesServices.getMasterProductAllergenAlias(req.query, (data) => {
+router.post('/master-product-allergen-alias', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getMasterProductAllergenAlias(req.body, (data) => {
         res.send(data);
     })
 });
 router.post('/map-product-allergen-alias-special-categories', isAuthorized, (req, res, next) => {
     specialCategoriesServices.mapProductAllergenAliasSpecialCategories(req.body, (data) => {
+        res.send(data);
+    })
+});
+router.get('/get-instore-product-category', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getProductCategoryProductsinStore(req.query, (data) => {
+        res.send(data);
+    })
+});
+router.get('/get-instore-product-sub-category', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getProductSubCategoryProductsinStore(req.query, (data) => {
+        res.send(data);
+    })
+});
+router.get('/get-instore-product-sub-category2', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getProductSubCategory2ProductsinStore(req.query, (data) => {
         res.send(data);
     })
 });

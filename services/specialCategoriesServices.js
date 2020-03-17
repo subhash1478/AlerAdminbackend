@@ -46,9 +46,16 @@ var ethnicServices = {
         connection.end();
     },
     getMasterProductAllergenAlias: async (data, callback) => {
+        console.log(data);
+        
         const connection = db.doConnection();
-        let selectQuery = `SELECT MasterId ,ProductName,specialcategoryID FROM alertrak.masterproductallergenalias LIMIT ${data.offset}, ${data.limit}`;
-        connection.query(selectQuery, (err, result) => {
+        let selectQuery = `SELECT MasterId ,ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias t1
+        INNER JOIN alertrak.ProductsinStore t2
+        ON t1.UPCEAN = t2.UPCEAN 
+        WHERE t2.product_category = '${data.product_category}' and t2.product_subcategory='${data.product_subcategory}' and t2.product_subcategory2='${data.product_subcategory2}'`;
+        console.log(selectQuery);
+        
+                connection.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
             }
@@ -100,5 +107,52 @@ var ethnicServices = {
         });
         // connection.end();
     },
+
+    getProductCategoryProductsinStore: async (data, callback) => {
+        console.log(data);
+        
+        const connection = db.doConnection();
+         let selectQuery = `SELECT distinct product_category FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}'`;
+         connection.query(selectQuery, data, function (err, result) {
+            if (err) {
+                callback(response.json(err))
+            }
+            else {
+                callback(response.json(null, result))
+            }
+        });
+        connection.end();
+        // connection.end();
+    },
+    getProductSubCategoryProductsinStore: async (data, callback) => {
+        const connection = db.doConnection();
+         let selectQuery = `SELECT distinct product_subcategory FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}' and product_category = '${data.product_category}';
+         `;
+         connection.query(selectQuery, data, function (err, result) {
+            if (err) {
+                callback(response.json(err))
+            }
+            else {
+                callback(response.json(null, result))
+            }
+        });
+        connection.end();
+        // connection.end();
+    },
+    getProductSubCategory2ProductsinStore: async (data, callback) => {
+        const connection = db.doConnection();
+         let selectQuery = `SELECT distinct product_subcategory2 FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}' and product_category = '${data.product_category}' and product_subcategory='${data.product_subcategory}'`;
+         connection.query(selectQuery, data, function (err, result) {
+            if (err) {
+                callback(response.json(err))
+            }
+            else {
+                callback(response.json(null, result))
+            }
+        });
+        connection.end();
+        // connection.end();
+    },
+
 }
 module.exports = ethnicServices;
