@@ -47,22 +47,19 @@ var ethnicServices = {
     },
     getMasterProductAllergenAlias: async (data, callback) => {
         console.log(data);
-        
         const connection = db.doConnection();
-        let selectQuery = `SELECT MasterId ,  ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias t1
+        let selectQuery = `SELECT MasterId , ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias t1
         INNER JOIN alertrak.ProductsinStore t2
         ON t1.UPCEAN = t2.UPCEAN 
-        WHERE t2.product_category = '${data.product_category}'`;        
-        if(data.product_subcategory){
-            selectQuery+=`and t2.product_subcategory='${data.product_subcategory}' `;
+        WHERE t2.product_category = '${data.product_category}'`;
+        if (data.product_subcategory) {
+            selectQuery += `and t2.product_subcategory='${data.product_subcategory}' `;
         }
-        if(data.product_subcategory2){
-            selectQuery+=`and t2.product_subcategory2='${data.product_subcategory2}'`;
+        if (data.product_subcategory2) {
+            selectQuery += `and t2.product_subcategory2='${data.product_subcategory2}'`;
         }
-        
         console.log(selectQuery);
-        
-                connection.query(selectQuery, (err, result) => {
+        connection.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
             }
@@ -86,7 +83,7 @@ var ethnicServices = {
                 const array = specialcategoryID.split(',');
                 let value = '';
                 if (data.type === 'add') {
-                    if (specialcategoryID.length >0) {
+                    if (specialcategoryID.length > 0) {
                         array.push(data.specialcategoryID);
                         value = array.join(',');
                     } else {
@@ -94,18 +91,15 @@ var ethnicServices = {
                     }
                 } else {
                     console.log(specialcategoryID);
-                    
-                    if (specialcategoryID.length <1) {
+                    if (specialcategoryID.length < 1) {
                         value = ''
                     } else {
                         value = array.filter((item) => item !== data.specialcategoryID);
-                      
                     }
                 }
                 let updateQuery = `UPDATE alertrak.masterproductallergenalias  SET specialcategoryID='${value}'`;
                 updateQuery += joinQuery;
                 console.log(updateQuery);
-                
                 connection.query(updateQuery, (err, result) => {
                     if (err) {
                         callback(response.json(err))
@@ -118,13 +112,11 @@ var ethnicServices = {
         });
         // connection.end();
     },
-
     getProductCategoryProductsinStore: async (data, callback) => {
         console.log(data);
-        
         const connection = db.doConnection();
-         let selectQuery = `SELECT distinct product_category FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}'`;
-         connection.query(selectQuery, data, function (err, result) {
+        let selectQuery = `SELECT distinct product_category FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}'`;
+        connection.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
             }
@@ -137,9 +129,9 @@ var ethnicServices = {
     },
     getProductSubCategoryProductsinStore: async (data, callback) => {
         const connection = db.doConnection();
-         let selectQuery = `SELECT distinct product_subcategory FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}' and product_category = '${data.product_category}';
+        let selectQuery = `SELECT distinct product_subcategory FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}' and product_category = '${data.product_category}';
          `;
-         connection.query(selectQuery, data, function (err, result) {
+        connection.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
             }
@@ -152,8 +144,8 @@ var ethnicServices = {
     },
     getProductSubCategory2ProductsinStore: async (data, callback) => {
         const connection = db.doConnection();
-         let selectQuery = `SELECT distinct product_subcategory2 FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}' and product_category = '${data.product_category}' and product_subcategory='${data.product_subcategory}'`;
-         connection.query(selectQuery, data, function (err, result) {
+        let selectQuery = `SELECT distinct product_subcategory2 FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}' and product_category = '${data.product_category}' and product_subcategory='${data.product_subcategory}'`;
+        connection.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
             }
@@ -164,6 +156,67 @@ var ethnicServices = {
         connection.end();
         // connection.end();
     },
-
+    getNotInStoreProductCategory: async (data, callback) => {
+        const connection = db.doConnection();
+        let selectQuery = `SELECT DISTINCT product_category FROM alertrak.MasterProductAllergenAlias where product_category!='' `;
+        console.log(selectQuery);
+        connection.query(selectQuery, data, function (err, result) {
+            if (err) {
+                callback(response.json(err))
+            }
+            else {
+                callback(response.json(null, result))
+            }
+        });
+        connection.end();
+        // connection.end();
+    },
+    getNotInstoreProductSubCategory: async (data, callback) => {
+        const connection = db.doConnection();
+        let selectQuery = `SELECT DISTINCT product_subcategory FROM alertrak.MasterProductAllergenAlias where product_subcategory!='' and product_category='${data.product_category}' `;
+        console.log(selectQuery);
+        connection.query(selectQuery, data, function (err, result) {
+            if (err) {
+                callback(response.json(err))
+            }
+            else {
+                callback(response.json(null, result))
+            }
+        });
+        connection.end();
+        // connection.end();
+    },
+    getMasterProductAllergenAliasNotInStore: async (data, callback) => {
+        console.log(data);
+        const connection = db.doConnection();
+        let selectQuery = `SELECT  MasterId , ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias WHERE product_category='Candy'`;
+        if (data.product_subcategory) {
+            selectQuery += `and product_subcategory='${data.product_subcategory}'`;
+        }
+        console.log(selectQuery);
+        connection.query(selectQuery, (err, result) => {
+            if (err) {
+                callback(response.json(err))
+            }
+            else {
+                callback(response.json(null, result))
+            }
+        });
+        connection.end();
+    },
+    getGroceryStores: async (data, callback) => {
+        console.log(data);
+        const connection = db.doConnection();
+        let selectQuery = `SELECT StoreID, StoreName FROM alertrak.Grocerystores`;
+        connection.query(selectQuery, (err, result) => {
+            if (err) {
+                callback(response.json(err))
+            }
+            else {
+                callback(response.json(null, result))
+            }
+        });
+        connection.end();
+    },
 }
 module.exports = ethnicServices;

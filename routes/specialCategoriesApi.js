@@ -48,4 +48,27 @@ router.post('/get-instore-product-sub-category2', isAuthorized, (req, res, next)
         res.send(data);
     })
 });
+
+router.post('/get-not-instore-product-category', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getNotInStoreProductCategory(req.body, (data) => {
+        res.send(data);
+    })
+});
+router.post('/get-not-instore-product-sub-category', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getNotInstoreProductSubCategory(req.body, (data) => {
+        res.send(data);
+    })
+});
+
+router.post('/master-product-allergen-alias-not-instore', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getMasterProductAllergenAliasNotInStore(req.body, (data) => {
+        res.send(data);
+    })
+});
+
+router.post('/get-grocery-store', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getGroceryStores(req.body, (data) => {
+        res.send(data);
+    })
+});
 module.exports = router;
