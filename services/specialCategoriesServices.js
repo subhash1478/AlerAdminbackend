@@ -49,10 +49,17 @@ var ethnicServices = {
         console.log(data);
         
         const connection = db.doConnection();
-        let selectQuery = `SELECT MasterId ,ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias t1
+        let selectQuery = `SELECT MasterId ,  ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias t1
         INNER JOIN alertrak.ProductsinStore t2
         ON t1.UPCEAN = t2.UPCEAN 
-        WHERE t2.product_category = '${data.product_category}' and t2.product_subcategory='${data.product_subcategory}' and t2.product_subcategory2='${data.product_subcategory2}'`;
+        WHERE t2.product_category = '${data.product_category}'`;        
+        if(data.product_subcategory){
+            selectQuery+=`and t2.product_subcategory='${data.product_subcategory}' `;
+        }
+        if(data.product_subcategory2){
+            selectQuery+=`and t2.product_subcategory2='${data.product_subcategory2}'`;
+        }
+        
         console.log(selectQuery);
         
                 connection.query(selectQuery, (err, result) => {
@@ -79,22 +86,26 @@ var ethnicServices = {
                 const array = specialcategoryID.split(',');
                 let value = '';
                 if (data.type === 'add') {
-                    if (array.length === 0) {
-                        array.push(data.specialcategoryID).join(',');
+                    if (specialcategoryID.length >0) {
+                        array.push(data.specialcategoryID);
                         value = array.join(',');
                     } else {
                         value = data.specialcategoryID;
                     }
                 } else {
-                    if (array.length === 1) {
+                    console.log(specialcategoryID);
+                    
+                    if (specialcategoryID.length <1) {
                         value = ''
                     } else {
-                        const a = array.findIndex((item) => item === data.specialcategoryID);
-                        value = array.splice(a, 1).join(',');
+                        value = array.filter((item) => item !== data.specialcategoryID);
+                      
                     }
                 }
                 let updateQuery = `UPDATE alertrak.masterproductallergenalias  SET specialcategoryID='${value}'`;
                 updateQuery += joinQuery;
+                console.log(updateQuery);
+                
                 connection.query(updateQuery, (err, result) => {
                     if (err) {
                         callback(response.json(err))

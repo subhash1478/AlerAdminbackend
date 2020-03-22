@@ -33,18 +33,18 @@ router.post('/map-product-allergen-alias-special-categories', isAuthorized, (req
         res.send(data);
     })
 });
-router.get('/get-instore-product-category', isAuthorized, (req, res, next) => {
-    specialCategoriesServices.getProductCategoryProductsinStore(req.query, (data) => {
+router.post('/get-instore-product-category', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getProductCategoryProductsinStore(req.body, (data) => {
         res.send(data);
     })
 });
-router.get('/get-instore-product-sub-category', isAuthorized, (req, res, next) => {
-    specialCategoriesServices.getProductSubCategoryProductsinStore(req.query, (data) => {
+router.post('/get-instore-product-sub-category', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getProductSubCategoryProductsinStore(req.body, (data) => {
         res.send(data);
     })
 });
-router.get('/get-instore-product-sub-category2', isAuthorized, (req, res, next) => {
-    specialCategoriesServices.getProductSubCategory2ProductsinStore(req.query, (data) => {
+router.post('/get-instore-product-sub-category2', isAuthorized, (req, res, next) => {
+    specialCategoriesServices.getProductSubCategory2ProductsinStore(req.body, (data) => {
         res.send(data);
     })
 });
