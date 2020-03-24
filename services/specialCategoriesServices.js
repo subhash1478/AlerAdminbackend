@@ -48,7 +48,6 @@ var ethnicServices = {
         connection.end();
     },
     getMasterProductAllergenAlias: async (data, callback) => {
-        console.log(data);
         const connection = db.doConnection();
         let selectQuery = `SELECT MasterId , ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias t1
         INNER JOIN alertrak.ProductsinStore t2
@@ -60,7 +59,6 @@ var ethnicServices = {
         if (data.product_subcategory2) {
             selectQuery += `and t2.product_subcategory2='${data.product_subcategory2}'`;
         }
-        console.log(selectQuery);
         connection_reader.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
@@ -92,7 +90,6 @@ var ethnicServices = {
                         value = data.specialcategoryID;
                     }
                 } else {
-                    console.log(specialcategoryID);
                     if (specialcategoryID.length < 1) {
                         value = ''
                     } else {
@@ -101,7 +98,6 @@ var ethnicServices = {
                 }
                 let updateQuery = `UPDATE alertrak.masterproductallergenalias  SET specialcategoryID='${value}'`;
                 updateQuery += joinQuery;
-                console.log(updateQuery);
                 connection_writer.query(updateQuery, (err, result) => {
                     if (err) {
                         callback(response.json(err))
@@ -115,7 +111,6 @@ var ethnicServices = {
         // connection.end();
     },
     getProductCategoryProductsinStore: async (data, callback) => {
-        console.log(data);
         const connection = db.doConnection();
         let selectQuery = `SELECT distinct product_category FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}'`;
         connection_reader.query(selectQuery, data, function (err, result) {
@@ -161,7 +156,6 @@ var ethnicServices = {
     getNotInStoreProductCategory: async (data, callback) => {
         const connection = db.doConnection();
         let selectQuery = `SELECT DISTINCT product_category FROM alertrak.MasterProductAllergenAlias where product_category!='' `;
-        console.log(selectQuery);
         connection_reader.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
@@ -176,7 +170,6 @@ var ethnicServices = {
     getNotInstoreProductSubCategory: async (data, callback) => {
         const connection = db.doConnection();
         let selectQuery = `SELECT DISTINCT product_subcategory FROM alertrak.MasterProductAllergenAlias where product_subcategory!='' and product_category='${data.product_category}' `;
-        console.log(selectQuery);
         connection_reader.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
@@ -189,13 +182,14 @@ var ethnicServices = {
         // connection.end();
     },
     getMasterProductAllergenAliasNotInStore: async (data, callback) => {
-        console.log(data);
         const connection = db.doConnection();
-        let selectQuery = `SELECT  MasterId , ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias WHERE product_category='Candy'`;
+        let selectQuery = `SELECT  MasterId , ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias WHERE product_category='${data.product_category}'`;
         if (data.product_subcategory) {
             selectQuery += `and product_subcategory='${data.product_subcategory}'`;
         }
         console.log(selectQuery);
+        
+
         connection_reader.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
@@ -207,7 +201,6 @@ var ethnicServices = {
         connection.end();
     },
     getGroceryStores: async (data, callback) => {
-        console.log(data);
         const connection = db.doConnection();
         let selectQuery = `SELECT StoreID, StoreName FROM alertrak.Grocerystores`;
         connection_reader.query(selectQuery, (err, result) => {
