@@ -1,3 +1,5 @@
+var connection_reader = require('../connection/connection_reader');
+var connection_writer = require('../connection/connection_writer');
 const db = require('./connection-services');
 const response = require('./response-services');
 const tblName = 'alertrak.Specialcategories'
@@ -9,7 +11,7 @@ var ethnicServices = {
         const connection = db.doConnection();
         updateQuery += ` WHERE ${primaryKey}='${data[primaryKey]}'`
         const sql = (data[primaryKey]) ? updateQuery : insertQuery;
-        connection.query(sql, data, (err, result) => {
+        connection_writer.query(sql, data, (err, result) => {
             if (err) {
                 callback(response.json(err))
             }
@@ -22,7 +24,7 @@ var ethnicServices = {
     getSpecialCategories: async (data, callback) => {
         const connection = db.doConnection();
         let selectQuery = `SELECT * FROM ${tblName}`;
-        connection.query(selectQuery, (err, result) => {
+        connection_reader.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
             }
@@ -35,7 +37,7 @@ var ethnicServices = {
     deleteSpecialCategories: async (data, callback) => {
         const connection = db.doConnection();
         let deleteQuery = `DELETE FROM ${tblName} WHERE ?`; // Delete query
-        connection.query(deleteQuery, data, function (err, result) {
+        connection_writer.query(deleteQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
             }
@@ -59,7 +61,7 @@ var ethnicServices = {
             selectQuery += `and t2.product_subcategory2='${data.product_subcategory2}'`;
         }
         console.log(selectQuery);
-        connection.query(selectQuery, (err, result) => {
+        connection_reader.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
             }
@@ -74,7 +76,7 @@ var ethnicServices = {
         const joinQuery = ` WHERE MasterId='${data.MasterId}'`;
         let selectQuery = `SELECT MasterId ,specialcategoryID FROM alertrak.masterproductallergenalias `;
         selectQuery += joinQuery
-        connection.query(selectQuery, data, (err, result) => {
+        connection_reader.query(selectQuery, data, (err, result) => {
             if (err) {
                 callback(response.json(err))
             }
@@ -100,7 +102,7 @@ var ethnicServices = {
                 let updateQuery = `UPDATE alertrak.masterproductallergenalias  SET specialcategoryID='${value}'`;
                 updateQuery += joinQuery;
                 console.log(updateQuery);
-                connection.query(updateQuery, (err, result) => {
+                connection_writer.query(updateQuery, (err, result) => {
                     if (err) {
                         callback(response.json(err))
                     }
@@ -116,7 +118,7 @@ var ethnicServices = {
         console.log(data);
         const connection = db.doConnection();
         let selectQuery = `SELECT distinct product_category FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}'`;
-        connection.query(selectQuery, data, function (err, result) {
+        connection_reader.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
             }
@@ -131,7 +133,7 @@ var ethnicServices = {
         const connection = db.doConnection();
         let selectQuery = `SELECT distinct product_subcategory FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}' and product_category = '${data.product_category}';
          `;
-        connection.query(selectQuery, data, function (err, result) {
+         connection_reader.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
             }
@@ -145,7 +147,7 @@ var ethnicServices = {
     getProductSubCategory2ProductsinStore: async (data, callback) => {
         const connection = db.doConnection();
         let selectQuery = `SELECT distinct product_subcategory2 FROM alertrak.ProductsinStore where StoreID= '${data.StoreID}' and product_category = '${data.product_category}' and product_subcategory='${data.product_subcategory}'`;
-        connection.query(selectQuery, data, function (err, result) {
+        connection_reader.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
             }
@@ -160,7 +162,7 @@ var ethnicServices = {
         const connection = db.doConnection();
         let selectQuery = `SELECT DISTINCT product_category FROM alertrak.MasterProductAllergenAlias where product_category!='' `;
         console.log(selectQuery);
-        connection.query(selectQuery, data, function (err, result) {
+        connection_reader.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
             }
@@ -175,7 +177,7 @@ var ethnicServices = {
         const connection = db.doConnection();
         let selectQuery = `SELECT DISTINCT product_subcategory FROM alertrak.MasterProductAllergenAlias where product_subcategory!='' and product_category='${data.product_category}' `;
         console.log(selectQuery);
-        connection.query(selectQuery, data, function (err, result) {
+        connection_reader.query(selectQuery, data, function (err, result) {
             if (err) {
                 callback(response.json(err))
             }
@@ -194,7 +196,7 @@ var ethnicServices = {
             selectQuery += `and product_subcategory='${data.product_subcategory}'`;
         }
         console.log(selectQuery);
-        connection.query(selectQuery, (err, result) => {
+        connection_reader.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
             }
@@ -208,7 +210,7 @@ var ethnicServices = {
         console.log(data);
         const connection = db.doConnection();
         let selectQuery = `SELECT StoreID, StoreName FROM alertrak.Grocerystores`;
-        connection.query(selectQuery, (err, result) => {
+        connection_reader.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
             }
