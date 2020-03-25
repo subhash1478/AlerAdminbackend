@@ -2,7 +2,7 @@ var connection_reader = require('../connection/connection_reader');
 var connection_writer = require('../connection/connection_writer');
 const db = require('./connection-services');
 const response = require('./response-services');
-const tblName = 'alertrak.Specialcategories'
+const tblName = 'alertrak.SpecialCategories'
 const primaryKey = 'categoryID'
 var ethnicServices = {
     addEditSpecialCategories: async (data, callback) => {
@@ -72,7 +72,7 @@ var ethnicServices = {
     mapProductAllergenAliasSpecialCategories: async (data, callback) => {
         const connection = db.doConnection();
         const joinQuery = ` WHERE MasterId='${data.MasterId}'`;
-        let selectQuery = `SELECT MasterId ,specialcategoryID FROM alertrak.masterproductallergenalias `;
+        let selectQuery = `SELECT MasterId ,specialcategoryID FROM alertrak.MasterProductAllergenAlias `;
         selectQuery += joinQuery
         connection_reader.query(selectQuery, data, (err, result) => {
             if (err) {
@@ -80,23 +80,25 @@ var ethnicServices = {
             }
             else {
                 const specialcategoryID = result[0].specialcategoryID;
-                const array = specialcategoryID.split(',');
+                const array = specialcategoryID ? specialcategoryID.split(',') : [];
                 let value = '';
                 if (data.type === 'add') {
-                    if (specialcategoryID.length > 0) {
-                        array.push(data.specialcategoryID);
+                    if (array.length > 0) {
+                        if(array.indexOf(data.specialcategoryID) == -1){
+                            array.push(data.specialcategoryID);
+                        }                       
                         value = array.join(',');
                     } else {
                         value = data.specialcategoryID;
                     }
                 } else {
-                    if (specialcategoryID.length < 1) {
+                    if (array.length < 1) {
                         value = ''
                     } else {
                         value = array.filter((item) => item !== data.specialcategoryID);
                     }
                 }
-                let updateQuery = `UPDATE alertrak.masterproductallergenalias  SET specialcategoryID='${value}'`;
+                let updateQuery = `UPDATE alertrak.MasterProductAllergenAlias  SET specialcategoryID='${value}'`;
                 updateQuery += joinQuery;
                 connection_writer.query(updateQuery, (err, result) => {
                     if (err) {
@@ -202,7 +204,7 @@ var ethnicServices = {
     },
     getGroceryStores: async (data, callback) => {
         const connection = db.doConnection();
-        let selectQuery = `SELECT StoreID, StoreName FROM alertrak.Grocerystores`;
+        let selectQuery = `SELECT StoreID, StoreName FROM alertrak.GroceryStores`;
         connection_reader.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
