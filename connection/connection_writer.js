@@ -9,7 +9,14 @@ var connection_writer = mysql.createConnection({
     port: 3306,
     database: 'alertrak',
     //debug: true,
-    multipleStatements: true
+    multipleStatements: true,
+    typeCast: function castField(field, useDefaultTypeCasting) {
+        if ((field.type === "BIT") && (field.length === 1)) {
+            var bytes = field.buffer();
+            return (bytes[0] === 1);
+        }
+        return (useDefaultTypeCasting());
+    }
     //timeout: 60000
 });
 
