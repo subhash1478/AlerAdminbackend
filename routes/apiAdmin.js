@@ -152,6 +152,44 @@ router.post('/listAllergeanAlias', function (req, res) {
         }
     });
 });
+router.post('/editAllergeanToAlias', function (req, res) {
+    
+   
+    if(!req.headers.authtoken){
+        res.send({
+            success: false,
+            STATUSCODE: 4200,
+            message: "Please provide required information!"
+        })
+    }
+    if (!req.body.ID) {
+        res.send({
+            "response_code": 5002,
+            "response_message": "please provide ID",
+            "response_data": []
+        });
+    }
+    if (!req.body.References) {
+        res.send({
+            "response_code": 5002,
+            "response_message": "please provide References",
+            "response_data": []
+        });
+    }
+    loginRegister.jwtAuthVerification(req.headers, function (auth) {
+        if (auth.response_code == 2000) {
+            
+            loginRegister.editAllergeanToAliasService(req.body, function (result) {
+                res.send(result)
+            })
+
+        } else if (auth.response_code == 4001) {
+            res.send(auth);
+        } else {
+            res.send(auth);
+        }
+    });
+});
 router.post('/addEditAllergenAlias', function (req, res) {
 
     if(!req.headers.authtoken){
