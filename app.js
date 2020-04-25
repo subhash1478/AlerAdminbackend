@@ -13,8 +13,10 @@ app.use(cors())
 
 var apiAdminRoutes = require('./routes/apiAdmin');
 var specialCategoriesApiRoutes = require('./routes/specialCategoriesApi');
+var mockDashboardApiRoutes = require('./routes/mockDashboardApi');
 app.use('/apiAdmin', apiAdminRoutes);
 app.use('/special-categories', specialCategoriesApiRoutes);
+app.use('/mock-dashboard', mockDashboardApiRoutes);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

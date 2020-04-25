@@ -4,7 +4,7 @@ const db = require('./connection-services');
 const response = require('./response-services');
 const tblName = 'alertrak.SpecialCategories'
 const primaryKey = 'categoryID'
-var ethnicServices = {
+var mockDataServices = {
     addEditSpecialCategories: async (data, callback) => {
         let updateQuery = `UPDATE ${tblName}  SET ?`;
         let insertQuery = `INSERT INTO ${tblName}  SET ?`;
@@ -204,7 +204,7 @@ var ethnicServices = {
     },
     getGroceryStores: async (data, callback) => {
         const connection = db.doConnection();
-        let selectQuery = `SELECT StoreID, StoreName FROM alertrak.GroceryStores where ActiveFlag=1`;
+        let selectQuery = `SELECT StoreID, StoreName FROM alertrak.GroceryStores`;
         connection_reader.query(selectQuery, (err, result) => {
             if (err) {
                 callback(response.json(err))
@@ -216,4 +216,4 @@ var ethnicServices = {
         connection.end();
     },
 }
-module.exports = ethnicServices;
+module.exports = mockDataServices;
