@@ -1910,15 +1910,34 @@ console.log(joinSql);
     addRemove: async (data, callback) => {
         //const connection = loginRegister.connection();
         let sqlInsert;
-        // DELETE query
         if (data.action === 'ADD') {
-            sqlInsert = `INSERT INTO alertrak.AllergenToAlias (AllergenID,AliasID) VALUES ("${data.AllergenID}", "${data.AliasID}")`;
-
+            sqlInsert = `INSERT INTO alertrak.AllergenToAlias (AllergenID,AliasID) VALUES `;
+            data.value.forEach((element, i) => {
+                if (i === data.value.length - 1) {
+                    sqlInsert += `("${element.AllergenID}", "${element.AliasID}")`
+                } else {
+                    sqlInsert += `("${element.AllergenID}", "${element.AliasID}"),`
+                }
+            });
         } else {
-            sqlInsert = `DELETE FROM alertrak.AllergenToAlias WHERE AllergenID= '${data.AllergenID}' and AliasID= '${data.AliasID}'`;
-
+            sqlInsert = `DELETE FROM alertrak.AllergenToAlias WHERE AllergenID IN (`;
+            data.value.forEach((element, i) => {
+                if (i === data.value.length - 1) {
+                    sqlInsert += element.AllergenID
+                } else {
+                    sqlInsert += `${element.AllergenID},`
+                }
+            });
+            sqlInsert += ') AND AliasID IN ('
+            data.value.forEach((element, i) => {
+                if (i === data.value.length - 1) {
+                    sqlInsert += element.AliasID
+                } else {
+                    sqlInsert += `${element.AliasID},`
+                }
+            });
+            sqlInsert += `)`
         }
-
         connection_writer.query(sqlInsert, function (err, result) {
             if (err) {
                 callback({ success: false, STATUSCODE: 4200, message: "Failed", response: err });
