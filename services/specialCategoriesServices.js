@@ -71,7 +71,7 @@ var ethnicServices = {
     },
     getMasterProductAllergenAlias: async (data, callback) => {
         const connection = db.doConnection();
-        let selectQuery = `SELECT MasterId , ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias t1
+        let selectQuery = `SELECT MasterId, t1.UPCEAN, ProductName,specialcategoryID FROM alertrak.MasterProductAllergenAlias t1
         INNER JOIN alertrak.ProductsinStore t2
         ON t1.UPCEAN = t2.UPCEAN 
         WHERE t2.product_category = '${data.product_category}'`;
