@@ -27,7 +27,7 @@
     "mysql-connection-pool-manager": "^1.5.7",
     "mysql2": "^1.6.5",
     "node-geocoder": "^3.23.0",
-    "nodemailer": "^5.1.1",
+    "nodemailer": "^6.4.16",
     "nodemailer-smtp-transport": "^2.7.4",
     "pug": "2.0.0-beta11",
     "sequelize": "^4.42.0"
