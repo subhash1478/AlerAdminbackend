@@ -14,7 +14,7 @@
     "csvtojson": "^2.0.8",
     "debug": "~2.6.9",
     "dotenv": "^6.2.0",
-    "express": "~4.16.0",
+    "express": "~4.17.3",
     "express-fileupload": "^1.1.1-alpha.1",
     "fs": "0.0.1-security",
     "geo-nearby": "^2.0.1",
